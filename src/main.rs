@@ -5,6 +5,7 @@ use anyhow::Error;
 use futures::executor::block_on;
 use rdkafka::util::Timeout;
 
+use rdkafka::TopicPartitionList;
 use rdkafka::{
     admin::{AdminClient, AdminOptions, NewTopic},
     config::ClientConfig,
@@ -79,7 +80,13 @@ async fn main() -> Result<(), Error> {
     // thread::sleep(seconds);
 
     println!("consumer COMMIT -----------");
-    let position = c.position()?;
+    // let position = c.position()?;
+
+
+    let partition = 0;
+    let mut position = TopicPartitionList::new();
+    position.add_partition_offset(topics[0], partition, rdkafka::Offset::Offset(1))?;
+
     Consumer::commit(&c, &position, rdkafka::consumer::CommitMode::Sync)?;
 
     Ok(())
