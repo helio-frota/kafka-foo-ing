@@ -79,15 +79,17 @@ async fn main() -> Result<(), Error> {
     // let seconds = time::Duration::from_millis(10_000);
     // thread::sleep(seconds);
 
-    println!("consumer COMMIT -----------");
-    // let position = c.position()?;
+    let position = c.position()?;
 
 
-    let partition = 0;
-    let mut position = TopicPartitionList::new();
-    position.add_partition_offset(topics[0], partition, rdkafka::Offset::Offset(1))?;
+    // let partition = 0;
+    // let mut position = TopicPartitionList::new();
+    // position.add_partition_offset(topics[0], partition, rdkafka::Offset::Offset(1))?;
 
-    Consumer::commit(&c, &position, rdkafka::consumer::CommitMode::Sync)?;
+    if position.count() > 0 {
+        println!("consumer COMMIT -----------");
+        Consumer::commit(&c, &position, rdkafka::consumer::CommitMode::Sync)?;
+    }
 
     Ok(())
 }
